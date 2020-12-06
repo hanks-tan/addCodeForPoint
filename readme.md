@@ -13,7 +13,7 @@ npm i
 
   如：
 ```
-node index.js ./testData/test.csv
+node index.js -f ./testData/test.csv
 ```
 
   打印出 done.. 代表运行结束
@@ -23,7 +23,7 @@ node index.js ./testData/test.csv
  ### 直接输入坐标获取区划代码
  
 ```
-node index.js 114.32 32.621
+node index.js -c  114.32 32.621
 463603
 ```
 # 3、配置

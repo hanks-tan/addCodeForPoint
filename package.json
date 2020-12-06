@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@turf/turf": "^5.1.6",
+    "minimist": "^1.2.5",
     "node-csv": "^0.1.2"
   }
 }

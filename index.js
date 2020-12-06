@@ -44,6 +44,11 @@ function main(inputFile, outputFile) {
         xIndex = values.indexOf(config.x)
         yIndex = values.indexOf(config.y)
         len = values.length
+        if(xIndex < 0 || xIndex < 0) {
+          console.log('未识别出x、y坐标列')
+          console.log('csv文件需第一列应为列名')
+          console.log('请指定csv文件的x坐标列名为lng,y坐标列名为lat，或您也可直接在config.js文件中自定义x、y坐标列的名称')
+        }
         writStm.write(line + ',code\n')
       }
     }
@@ -72,9 +77,45 @@ function joinCode(x, y) {
   return code
 }
 
-var args = process.argv.splice(2)[0]
-if (args) {
-  console.log(args)
+var cmdList = [
+  ['-f', '-f 文件名 '],
+  ['-o', '-o 输出文件'],
+  ['-c', '-c 114 21']
+]
+
+function getParams(argvs) {
+  var cmdHeader = cmdList.filter(item => {
+    console.log(argvs[0])
+    console.log(item[0])
+    return item[0] === argvs[0]
+  })
+  var cmdArg = argvs.slice(1)
+  if(cmdHeader.length > 0) {
+    return {
+      cmd: cmdHeader[0],
+      arg: cmdArg
+    }
+  } else {
+    cmdHeader.forEach(item => {
+      console.log(item)
+    })
+    return undefined
+  }
+
+  // if(cmd) {
+  //   return {
+  //     cmd: argvs[0],
+  //     arg: argvs.slice(1)
+  //   }
+  // } else {
+  //   cmdHeader.forEach(item => {
+  //     console.log(item)
+  //   })
+  //   return undefined
+  // }
+}
+
+function toFileTask(args) {
   var inPath = args
   if (!path.isAbsolute(args)) {
     inPath = path.join(__dirname, args)
@@ -87,5 +128,37 @@ if (args) {
     main(inPath, outPath)
   }
 }
+
+function toSingleTask(cmd) {
+  var x = parseInt(cmd.arg[0])
+  var y = parseInt(cmd.arg[1])
+  joinCode(x, y)
+}
+// var args = process.argv.splice(2)[0]
+var cmdArgv = require("minimist")(process.argv.splice(2))
+
+if (cmdArgv.c) {
+  var x = cmdArgv.c
+  var y = cmdArgv._[0]
+  toSingleTask(x, y)
+} else if(cmdArgv.f) {
+  toFileTask(cmdArgv.f)
+}
+
+
+// if (args) {
+//   console.log(args)
+//   var inPath = args
+//   if (!path.isAbsolute(args)) {
+//     inPath = path.join(__dirname, args)
+//   }
+//   var f = fs.statSync(inPath)
+//   if (f.isFile()) {
+//     var name = path.basename(inPath)
+//     var outPath = 'c_' + name
+//     outPath = path.join(path.dirname(inPath), outPath)
+//     main(inPath, outPath)
+//   }
+// }
 
 // main('./testData/dm.csv', './testData/c_test.csv')
